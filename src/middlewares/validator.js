@@ -34,7 +34,40 @@ const validatePassword = async (user, userInputPassword) => {
     return isPasswordValid;
 };
 
+const validateFields = (keys, allowed, restricted) => {
+    const forbidden = keys.filter(k => restricted.has(k));
+    if (forbidden.length) {
+        throw new Error(`Restricted fields: ${forbidden.join(", ")}`);
+    }
+
+    const invalid = keys.filter(k => !allowed.has(k));
+    if (invalid.length) {
+        throw new Error(`Invalid fields: ${invalid.join(", ")}`);
+    }
+
+};
+
+const validateEditUserData = (req, res, next) => {
+    try {
+        const ALLOWED_FIELDS = new Set(["firstName", "lastName"]);
+        const RESTRICTED_FIELDS = new Set(["emailId", "password", "role"]);
+
+        const keys = Object.keys(req.body || {});
+
+        if (keys.length === 0) {
+            throw new Error("No fields provided for update");
+        }
+        validateFields(keys, ALLOWED_FIELDS, RESTRICTED_FIELDS);
+
+        next();
+
+    } catch (err) {
+        next(err);
+    }
+};
+
 module.exports = {
     validateSignUpData,
-    validatePassword
+    validatePassword,
+    validateEditUserData
 };
