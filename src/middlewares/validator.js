@@ -24,6 +24,17 @@ const validateSignUpData = (req, res, next) => {
     }
 }
 
+const validatePassword = async (user, userInputPassword) => {
+    const passwordHash = user.password;
+
+    const isPasswordValid = await bcrypt.compare(
+        userInputPassword,
+        passwordHash
+    );
+    return isPasswordValid;
+};
+
 module.exports = {
     validateSignUpData,
+    validatePassword
 };
