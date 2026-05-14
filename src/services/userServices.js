@@ -1,3 +1,4 @@
+const { getHashPassword } = require("../services/authServices");
 
 const getUserProfileService = (user) => {
     return {
@@ -25,7 +26,17 @@ const updateUserService = async (user, updateData) => {
     };
 };
 
+const changePasswordService = async (user, newPassword) => {
+    const newPasswordHash = await getHashPassword(newPassword);
+
+    user.password = newPasswordHash;
+    await user.save();
+
+    return true;
+};
+
 module.exports = {
     getUserProfileService,
-    updateUserService
+    updateUserService,
+    changePasswordService
 }

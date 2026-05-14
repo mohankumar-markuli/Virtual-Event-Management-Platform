@@ -66,8 +66,37 @@ const validateEditUserData = (req, res, next) => {
     }
 };
 
+const validateChangePassword = async (req, res, next) => {
+    try {
+        const { password, newPassword } = req.body;
+
+        if (!password || !newPassword) {
+            throw new Error("Both old and new passwords are required");
+        }
+
+        if (!validator.isStrongPassword(newPassword)) {
+            throw new Error("New password must be strong");
+        }
+
+        const isOldPasswordValid = await validatePassword(req.user, password);
+        if (!isOldPasswordValid) {
+            throw new Error("Incorrect current password");
+        }
+
+        const isNewPasswordSame = await validatePassword(req.user, newPassword);
+        if (isNewPasswordSame) {
+            throw new Error("New password cannot be same as old password");
+        }
+        next();
+
+    } catch (err) {
+        next(err);
+    }
+}
+
 module.exports = {
     validateSignUpData,
     validatePassword,
-    validateEditUserData
+    validateEditUserData,
+    validateChangePassword
 };

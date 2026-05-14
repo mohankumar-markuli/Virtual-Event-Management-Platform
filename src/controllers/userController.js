@@ -1,5 +1,6 @@
 const { getUserProfileService,
-    updateUserService
+    updateUserService,
+    changePasswordService
 } = require("../services/userServices");
 
 const viewUser = async (req, res, next) => {
@@ -30,6 +31,27 @@ const editUser = async (req, res, next) => {
     }
 };
 
+const changePassword = async (req, res, next) => {
+    try {
+
+        await changePasswordService(
+            req.user,
+            req.body.newPassword,
+        );
+
+        res.clearCookie("token", {
+            httpOnly: true,
+            sameSite: "strict",
+        });
+
+        return res.status(200).json({
+            message: "Password Changed Successfully",
+        });
+
+    } catch (err) {
+        return next(err);
+    }
+};
 
 
-module.exports = { viewUser, editUser };
+module.exports = { viewUser, editUser, changePassword };
