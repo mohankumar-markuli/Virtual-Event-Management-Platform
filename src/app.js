@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+const cookieParser = require("cookie-parser");
+
 const { logger } = require('./middlewares/logger');
 const { errorHandler } = require("./middlewares/errorHandler");
 
@@ -9,6 +11,13 @@ const dns = require("dns");
 dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 app.use(logger);
+app.use(express.json());
+app.use(cookieParser());
+
+// routes
+const authRouter = require('./routes/authRouter');
+
+app.use("/api/v1/auth", authRouter);
 
 // health
 app.get("/api/v1/health", (req, res) => {
