@@ -1,8 +1,8 @@
-require("dotenv").config();
 const express = require("express");
 const app = express();
 
 const { logger } = require('./middlewares/logger');
+const { errorHandler } = require("./middlewares/errorHandler");
 
 // DNS
 const dns = require("dns");
@@ -18,5 +18,8 @@ app.get("/api/v1/health", (req, res) => {
         timestamp: new Date().toISOString()
     });
 });
+
+// error handler
+app.use(errorHandler);
 
 module.exports = app;
