@@ -42,5 +42,4 @@ const userSchema = new mongoose.Schema({
     }
 );
 
-userSchema.index({ emailId: 1 });
 module.exports = mongoose.model("User", userSchema);
