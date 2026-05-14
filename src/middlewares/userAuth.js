@@ -6,7 +6,7 @@ const userAuth = async (req, res, next) => {
         // extract token from cookies send by request
         const { token } = req.cookies;
         if (!token) {
-            return res.status(401).send("Plase login");
+            return res.status(401).send("Please login");
         }
 
         //validate the token
