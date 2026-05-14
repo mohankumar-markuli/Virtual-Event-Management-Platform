@@ -1,0 +1,26 @@
+{
+  "name": "virtual-event-management-platform",
+  "version": "1.0.0",
+  "description": "virtual event management platform",
+  "homepage": "https://github.com/mohankumar-markuli/Virtual-Event-Management-Platform#readme",
+  "bugs": {
+    "url": "https://github.com/mohankumar-markuli/Virtual-Event-Management-Platform/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohankumar-markuli/Virtual-Event-Management-Platform.git"
+  },
+  "license": "ISC",
+  "author": "mohankumar",
+  "type": "commonjs",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
