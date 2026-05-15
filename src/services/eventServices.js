@@ -107,10 +107,18 @@ const updateEventService = async (req) => {
     return eventResponse;
 };
 
+const deleteEventService = async (eventId) => {
+    const event = await Event.findById(eventId);
+
+    if (!event)
+        throw new Error("Event not found");
+    await Event.findByIdAndDelete(eventId);
+};
 
 module.exports = {
     createEventService,
     getEventService,
     getEventByIdService,
-    updateEventService
+    updateEventService,
+    deleteEventService
 };

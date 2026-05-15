@@ -1,7 +1,8 @@
 const { createEventService,
     getEventService,
     getEventByIdService,
-    updateEventService
+    updateEventService,
+    deleteEventService
 } = require("../services/eventServices");
 
 const createEvent = async (req, res, next) => {
@@ -62,5 +63,18 @@ const updateEvent = async (req, res, next) => {
     }
 };
 
+const deleteEvent = async (req, res, next) => {
+    try {
+        const eventId = req.params.id;
+        await deleteEventService(eventId);
 
-module.exports = { createEvent, getEvents, getEventById, updateEvent };
+        res.status(200).json({
+            message: "Event deleted successfully"
+        });
+    } catch (err) {
+        next(err);
+    }
+};
+
+
+module.exports = { createEvent, getEvents, getEventById, updateEvent, deleteEvent };
