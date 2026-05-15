@@ -79,8 +79,38 @@ const getEventByIdService = async (eventId) => {
     return eventResponse;
 };
 
+const updateEventService = async (req) => {
+
+    const eventId = req.params.id;
+
+    const event = await Event.findById(eventId);
+
+    if (!event)
+        throw new Error("Event not found");
+
+    Object.keys(req.body).forEach((key) => {
+        event[key] = req.body[key];
+    });
+
+    const updatedEvent = await event.save();
+
+    const eventResponse = {
+        _id: updatedEvent._id,
+        organizer: updatedEvent.organizer,
+        title: updatedEvent.title,
+        description: updatedEvent.description,
+        eventDate: updatedEvent.eventDate,
+        eventTime: updatedEvent.eventTime,
+        maxAttendees: updatedEvent.maxAttendees,
+    };
+
+    return eventResponse;
+};
+
+
 module.exports = {
     createEventService,
     getEventService,
-    getEventByIdService
+    getEventByIdService,
+    updateEventService
 };

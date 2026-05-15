@@ -1,6 +1,7 @@
 const { createEventService,
     getEventService,
-    getEventByIdService
+    getEventByIdService,
+    updateEventService
 } = require("../services/eventServices");
 
 const createEvent = async (req, res, next) => {
@@ -47,4 +48,19 @@ const getEventById = async (req, res, next) => {
     }
 };
 
-module.exports = { createEvent, getEvents, getEventById };
+const updateEvent = async (req, res, next) => {
+    try {
+        const eventUpdateresponse = await updateEventService(req);
+
+        res.status(201).json({
+            message: "Event updated successfully",
+            data: eventUpdateresponse
+        });
+
+    } catch (err) {
+        next(err);
+    }
+};
+
+
+module.exports = { createEvent, getEvents, getEventById, updateEvent };
