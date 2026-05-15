@@ -1,6 +1,6 @@
 const Registration = require('../models/registerationModel');
 
-const registerationService = async (req) => {
+const registrationService = async (req) => {
     const { eventId } = req.params;
     const userId = req.user.id;
 
@@ -28,5 +28,5 @@ const registerationService = async (req) => {
 };
 
 module.exports = {
-    registerationService
+    registrationService
 };

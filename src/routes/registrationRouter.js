@@ -7,6 +7,6 @@ const { registerForEvent } = require("../controllers/registrationController");
 
 registrationRouter.use(userAuth);
 
-registrationRouter.post('/:eventId/register', registerForEvent);
+registrationRouter.post('/:eventId', registerForEvent);
 
 module.exports = registrationRouter;
