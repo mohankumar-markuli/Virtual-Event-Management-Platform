@@ -43,7 +43,29 @@ const getUserRegistrationsService = async (userId) => {
     }));
 };
 
+const deleteEventRegistrationService = async (registrationId, userId) => {
+    const registration = await Registration.findOneAndDelete({ _id: registrationId, userId });
+
+    if (!registration) {
+        throw new Error("Registration not found");
+    }
+    return registration;
+};
+
+const cancelEventRegistrationService = async (registrationId, userId) => {
+    const registration = await Registration.findOneAndUpdate(
+        { _id: registrationId, userId },
+        { registrationStatus: "cancelled" },
+        { new: true }
+    );
+
+    return registration;
+};
+
+
 module.exports = {
     registrationService,
-    getUserRegistrationsService
+    getUserRegistrationsService,
+    deleteEventRegistrationService,
+    cancelEventRegistrationService
 };
