@@ -7,7 +7,7 @@ const { registerForEvent,
     getUserRegistrations,
     deleteEventRegistration,
     cancelEventRegistration
-} = require("../controllers/registrationController");
+} = require("../controllers/registerationController");
 
 registrationRouter.use(userAuth);
 
