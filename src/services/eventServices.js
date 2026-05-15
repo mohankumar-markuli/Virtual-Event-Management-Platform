@@ -1,4 +1,3 @@
-
 const Event = require("../models/eventModel");
 
 const createEventService = async (req) => {
