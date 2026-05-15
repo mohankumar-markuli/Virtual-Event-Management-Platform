@@ -3,10 +3,11 @@ const registrationRouter = express.Router();
 
 const { userAuth } = require("../middlewares/appAuth");
 
-const { registerForEvent } = require("../controllers/registrationController");
+const { registerForEvent, getUserRegistrations } = require("../controllers/registrationController");
 
 registrationRouter.use(userAuth);
 
 registrationRouter.post('/:eventId', registerForEvent);
+registrationRouter.get('/myRegistrations', getUserRegistrations);
 
 module.exports = registrationRouter;

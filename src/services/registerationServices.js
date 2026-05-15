@@ -27,6 +27,23 @@ const registrationService = async (req) => {
     return registrationResponse;
 };
 
+const getUserRegistrationsService = async (userId) => {
+    const registrations = await Registration.find({ userId })
+        .populate('eventId', 'title date')
+        .populate("userId", "firstName lastName emailId");
+
+    return registrations.map(reg => ({
+        _id: reg._id,
+        Attendee: `${reg.userId.firstName} ${reg.userId.lastName} (${reg.userId.emailId})`,
+        eventId: reg.eventId._id,
+        eventTitle: reg.eventId.title,
+        eventDate: reg.eventId.date,
+        registrationDate: reg.registrationDate,
+        registrationStatus: reg.registrationStatus,
+    }));
+};
+
 module.exports = {
-    registrationService
+    registrationService,
+    getUserRegistrationsService
 };

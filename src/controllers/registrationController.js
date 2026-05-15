@@ -1,4 +1,6 @@
-const { registrationService } = require('../services/registerationServices');
+const { registrationService,
+    getUserRegistrationsService
+} = require('../services/registerationServices');
 
 const registerForEvent = async (req, res, next) => {
     try {
@@ -17,6 +19,21 @@ const registerForEvent = async (req, res, next) => {
     }
 };
 
+const getUserRegistrations = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const registrations = await getUserRegistrationsService(userId);
+        res.status(200).json({
+            message: "User registrations fetched successfully",
+            data: registrations
+        });
+
+    } catch (err) {
+        next(err);
+    }
+};
+
 module.exports = {
-    registerForEvent
+    registerForEvent,
+    getUserRegistrations
 };
