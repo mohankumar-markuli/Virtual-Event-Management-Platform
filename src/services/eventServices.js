@@ -56,7 +56,31 @@ const getEventService = async (req) => {
     return formattedEvents;
 };
 
+const getEventByIdService = async (eventId) => {
+
+    const event = await Event.findById(eventId).populate("organizer", "firstName lastName emailId");
+
+    if (!event) throw new Error("Event not found");
+
+    const eventResponse = {
+        _id: event._id,
+        organizer: {
+            firstName: event.organizer.firstName,
+            lastName: event.organizer.lastName,
+            emailId: event.organizer.emailId
+        },
+        title: event.title,
+        description: event.description,
+        eventDate: event.eventDate,
+        eventTime: event.eventTime,
+        maxAttendees: event.maxAttendees,
+    };
+
+    return eventResponse;
+};
+
 module.exports = {
     createEventService,
-    getEventService
+    getEventService,
+    getEventByIdService
 };
