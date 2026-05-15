@@ -22,7 +22,7 @@ const createEvent = async (req, res, next) => {
 const getEvents = async (req, res, next) => {
     try {
 
-        const response = await getEventService(req);
+        const response = await getEventService();
 
         res.status(200).json({
             message: "Events retrieved successfully",
@@ -51,11 +51,11 @@ const getEventById = async (req, res, next) => {
 
 const updateEvent = async (req, res, next) => {
     try {
-        const eventUpdateresponse = await updateEventService(req);
+        const eventUpdateResponse = await updateEventService(req);
 
-        res.status(201).json({
+        res.status(200).json({
             message: "Event updated successfully",
-            data: eventUpdateresponse
+            data: eventUpdateResponse
         });
 
     } catch (err) {

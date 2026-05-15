@@ -1,5 +1,6 @@
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const { validate } = require("../models/userModel");
 
 const validateSignUpData = (req, res, next) => {
     try {
@@ -114,54 +115,72 @@ const validateChangePassword = async (req, res, next) => {
     }
 };
 
-const validateEventData = (req, res, next) => {
-    try {
+const validateEventData = (data) => {
 
-        const { title, description, eventDate, eventTime, maxAttendees } = req.body;
+    const { title, description, eventDate, eventTime, maxAttendees } = data;
 
-        // title
-        if (!title)
-            throw new Error("Title is required");
-
+    // title
+    if (title !== undefined && title !== null) {
         if (typeof title !== "string")
             throw new Error("Title must be a string");
 
         if (title.trim().length < 5 || title.trim().length > 100)
             throw new Error("Title should be between 5 and 100 characters");
+    }
 
-        // description
-        if (description && typeof description !== "string")
+    // description
+    if (description !== undefined && description !== null) {
+        if (typeof description !== "string")
             throw new Error("Description must be a string");
 
-        if (description && description.length > 1000)
+        if (description.length > 1000)
             throw new Error("Description too long");
 
-        // event date
-        if (!eventDate)
-            throw new Error("Event date is required");
+    }
 
+    // event date
+    if (eventDate !== undefined && eventDate !== null) {
         const parsedDate = new Date(eventDate);
 
         if (parsedDate.toString() === "Invalid Date")
             throw new Error("Invalid event date");
 
-        if (parsedDate < new Date())
-            throw new Error("Event date cannot be in the past");
+        const today = new Date();
 
-        // event time
-        if (!eventTime)
-            throw new Error("Event time is required");
+        today.setHours(0, 0, 0, 0);
+        parsedDate.setHours(0, 0, 0, 0);
 
+        if (parsedDate < today)
+            throw new Error(
+                "Event date cannot be in the past"
+            );
+    }
+
+    // event time
+    if (eventTime !== undefined && eventTime !== null) {
         const timeRegex =
             /^(0?[1-9]|1[0-2]):([0-5][0-9])\s?(AM|PM)\s?(IST|GMT|UTC)$/i;
 
         if (!timeRegex.test(eventTime))
             throw new Error("Invalid event time format");
 
-        // max attendees
-        if (maxAttendees === undefined || maxAttendees === null)
-            throw new Error("Max attendees is required");
+        const [time, meridian] = eventTime.split(" ");
 
+        let [hours, minutes] = time.split(":").map(Number);
+
+        if (meridian.toUpperCase() === "PM" && hours !== 12) hours += 12;
+        if (meridian.toUpperCase() === "AM" && hours === 12) hours = 0;
+
+        const eventDateTime = new Date(eventDate);
+
+        eventDateTime.setHours(hours, minutes, 0, 0);
+
+        if (eventDateTime < new Date())
+            throw new Error("Event time cannot be in the past");
+    }
+
+    // max attendees
+    if (maxAttendees !== undefined && maxAttendees !== null) {
         if (typeof maxAttendees !== "number")
             throw new Error("Max attendees must be a number");
 
@@ -171,6 +190,33 @@ const validateEventData = (req, res, next) => {
         if (maxAttendees > 1000)
             throw new Error("Max attendees limit exceeded");
 
+    }
+
+    return true;
+}
+
+const validateCreateEventData = (req, res, next) => {
+    try {
+
+        const { title, description, eventDate, eventTime, maxAttendees } = req.body;
+
+        // validate required fields
+        if (!title)
+            throw new Error("Title is required");
+
+        if (!eventDate)
+            throw new Error("Event date is required");
+
+        if (!eventTime)
+            throw new Error("Event time is required");
+
+        if (maxAttendees === undefined || maxAttendees === null)
+            throw new Error("Max attendees is required");
+
+        const data = { title, description, eventDate, eventTime, maxAttendees };
+
+        if (!validateEventData(data)) throw new Error("Event data validation failed");
+
         next();
 
     } catch (err) {
@@ -178,10 +224,40 @@ const validateEventData = (req, res, next) => {
     }
 };
 
+const validateEventUpdateData = (req, res, next) => {
+    try {
+
+        const { title, description, eventDate, eventTime, maxAttendees } = req.body;
+
+        const ALLOWED_FIELDS = new Set(["title", "description", "eventDate",
+            "eventTime", "maxAttendees"
+        ]);
+        const RESTRICTED_FIELDS = new Set(["organizer"]);
+
+        const keys = Object.keys(req.body || {});
+
+        if (keys.length === 0) {
+            throw new Error("No fields provided for update");
+        }
+        validateFields(keys, ALLOWED_FIELDS, RESTRICTED_FIELDS);
+
+        const data = { title, description, eventDate, eventTime, maxAttendees };
+
+        if (!validateEventData(data)) throw new Error("Update not allowed");
+
+        next();
+
+    } catch (err) {
+        next(err);
+    }
+};
+
+
 module.exports = {
     validateSignUpData,
     validatePassword,
     validateEditUserData,
     validateChangePassword,
-    validateEventData
+    validateCreateEventData,
+    validateEventUpdateData
 };

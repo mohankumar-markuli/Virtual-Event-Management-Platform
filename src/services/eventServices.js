@@ -36,7 +36,7 @@ const createEventService = async (req) => {
     return eventResponse;
 };
 
-const getEventService = async (req) => {
+const getEventService = async () => {
     const events = await Event.find().populate("organizer", "firstName lastName emailId");
 
     const formattedEvents = events.map(event => ({
