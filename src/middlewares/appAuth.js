@@ -1,6 +1,20 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
+const adminAuth = (req, res, next) => {
+    try {
+        const ALLOWED_FIELDS = new Set(["organizer", "admin"]);
+        if (!ALLOWED_FIELDS.has(req.user.role)) {
+            throw new Error("Access denied");
+        }
+        next();
+
+    } catch (err) {
+        res.status(401).send(err.message);
+    }
+};
+
+
 const userAuth = async (req, res, next) => {
     try {
         // extract token from cookies send by request
@@ -27,5 +41,6 @@ const userAuth = async (req, res, next) => {
 };
 
 module.exports = {
-    userAuth
+    userAuth,
+    adminAuth
 };
