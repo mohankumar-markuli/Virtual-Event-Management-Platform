@@ -78,11 +78,17 @@ const deleteEventRegistrationService = async (req) => {
 const cancelEventRegistrationService = async (req) => {
     const { registrationId } = req.params;
     const userId = req.user.id;
+
+    console.log(userId, registrationId);
+
     const registration = await Registration.findOneAndUpdate(
         { _id: registrationId, userId },
-        { registrationStatus: "cancelled" },
-        { returnDocument: "after" }
+        { registrationStatus: "cancelled" }
     );
+
+    if (!registration)
+        throw new Error("Registration not found");
+
     await sendEmail({
         to: req.user.emailId,
         subject: "Event Registration Cancelled",
