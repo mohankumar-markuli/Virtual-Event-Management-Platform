@@ -2,6 +2,12 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 
 const eventSchema = new mongoose.Schema({
+    organizer: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        index: true,
+        ref: "User"
+    },
     title: {
         type: String,
         index: true,
@@ -24,10 +30,6 @@ const eventSchema = new mongoose.Schema({
         required: true
     },
     eventEndTime: {
-        type: String,
-        required: true
-    },
-    organizer: {
         type: String,
         required: true
     },
