@@ -79,8 +79,6 @@ const cancelEventRegistrationService = async (req) => {
     const { registrationId } = req.params;
     const userId = req.user.id;
 
-    console.log(userId, registrationId);
-
     const registration = await Registration.findOneAndUpdate(
         { _id: registrationId, userId },
         { registrationStatus: "cancelled" }
