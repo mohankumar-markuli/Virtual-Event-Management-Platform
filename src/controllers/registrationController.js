@@ -37,9 +37,8 @@ const getUserRegistrations = async (req, res, next) => {
 
 const deleteEventRegistration = async (req, res, next) => {
     try {
-        const { registrationId } = req.params;
-        const userId = req.user.id;
-        const registration = await deleteEventRegistrationService(registrationId, userId);
+
+        const registration = await deleteEventRegistrationService(req);
 
         res.status(200).json({
             message: "Event registration deleted successfully",
@@ -52,14 +51,10 @@ const deleteEventRegistration = async (req, res, next) => {
 
 const cancelEventRegistration = async (req, res, next) => {
     try {
-        const { registrationId } = req.params;
-        const userId = req.user.id;
-
-        const registration = await cancelEventRegistrationService(registrationId, userId);
+        const registration = await cancelEventRegistrationService(req);
 
         res.status(200).json({
             message: "Event registration cancelled successfully",
-            data: registration
         });
     }
     catch (err) {

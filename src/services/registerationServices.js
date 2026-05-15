@@ -1,4 +1,5 @@
 const Registration = require('../models/registerationModel');
+const { sendEmail } = require('../utils/emailHelper');
 
 const registrationService = async (req) => {
     const { eventId } = req.params;
@@ -16,6 +17,16 @@ const registrationService = async (req) => {
     });
 
     const regesteredData = await registration.save();
+
+    await sendEmail({
+        to: req.user.emailId,
+
+        subject:
+            "Event Registration Successful",
+
+        text:
+            `Hi ${req.user.firstName}, You have successfully registered for the event.`
+    });
 
     const registrationResponse = {
         _id: regesteredData._id,
@@ -43,21 +54,40 @@ const getUserRegistrationsService = async (userId) => {
     }));
 };
 
-const deleteEventRegistrationService = async (registrationId, userId) => {
-    const registration = await Registration.findOneAndDelete({ _id: registrationId, userId });
+const deleteEventRegistrationService = async (req) => {
+
+    const { registrationId } = req.params;
+    const userId = req.user.id;
+    const registration = await Registration.findOneAndDelete(
+        { _id: registrationId, userId },
+        { returnDocument: "after" });
 
     if (!registration) {
         throw new Error("Registration not found");
     }
+
+    await sendEmail({
+        to: req.user.emailId,
+        subject: "Event Registration Deleted from Record",
+        text: `Your registration record has been deleted successfully.`
+    });
+
     return registration;
 };
 
-const cancelEventRegistrationService = async (registrationId, userId) => {
+const cancelEventRegistrationService = async (req) => {
+    const { registrationId } = req.params;
+    const userId = req.user.id;
     const registration = await Registration.findOneAndUpdate(
         { _id: registrationId, userId },
         { registrationStatus: "cancelled" },
-        { new: true }
+        { returnDocument: "after" }
     );
+    await sendEmail({
+        to: req.user.emailId,
+        subject: "Event Registration Cancelled",
+        text: `Your event registration has been cancelled successfully.`
+    });
 
     return registration;
 };
