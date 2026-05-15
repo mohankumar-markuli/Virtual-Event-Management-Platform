@@ -2,7 +2,7 @@ const express = require("express");
 const userRouter = express.Router();
 
 
-const { userAuth } = require("../middlewares/userAuth");
+const { userAuth } = require("../middlewares/appAuth");
 const { viewUser, editUser, changePassword } = require("../controllers/userController");
 const { validateEditUserData, validateChangePassword } = require("../middlewares/validator");
 
