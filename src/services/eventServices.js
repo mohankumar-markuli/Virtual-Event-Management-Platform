@@ -36,6 +36,27 @@ const createEventService = async (req) => {
     return eventResponse;
 };
 
+const getEventService = async (req) => {
+    const events = await Event.find().populate("organizer", "firstName lastName emailId");
+
+    const formattedEvents = events.map(event => ({
+        _id: event._id,
+        organizer: {
+            firstName: event.organizer.firstName,
+            lastName: event.organizer.lastName,
+            emailId: event.organizer.emailId
+        },
+        title: event.title,
+        description: event.description,
+        eventDate: event.eventDate,
+        eventTime: event.eventTime,
+        maxAttendees: event.maxAttendees,
+    }));
+
+    return formattedEvents;
+};
+
 module.exports = {
-    createEventService
+    createEventService,
+    getEventService
 };
