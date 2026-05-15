@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
-const allowAdmin = (req, res, next) => {
+const admin = (req, res, next) => {
     try {
         const ALLOWED_FIELDS = new Set(["organizer", "admin"]);
         if (!ALLOWED_FIELDS.has(req.user.role)) {
@@ -13,7 +13,6 @@ const allowAdmin = (req, res, next) => {
         res.status(403).send(err.message);
     }
 };
-
 
 const userAuth = async (req, res, next) => {
     try {
@@ -42,5 +41,5 @@ const userAuth = async (req, res, next) => {
 
 module.exports = {
     userAuth,
-    allowAdmin
+    admin
 };
